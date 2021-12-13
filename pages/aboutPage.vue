@@ -1,7 +1,7 @@
 <template>
   <div>
     <navigation-test />
-    <h1>Hello from about</h1>
+    <h1>Hello from about1</h1>
   </div>
 </template>
 
