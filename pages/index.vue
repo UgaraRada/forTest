@@ -1,5 +1,7 @@
 <template>
-  <navigation-test />
+  <div>
+    <h2>Main Page</h2>
+  </div>
 </template>
 
 <script>
