@@ -1,27 +1,5 @@
 <template>
   <v-app light>
-    <!-- <v-navigation-drawer
-      v-model="drawer"
-      clipped
-      fixed
-      app
-      dark
-      color="#656565"
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer> -->
     <v-app-bar
       clipped-left
       fixed
@@ -57,18 +35,7 @@ export default {
   name: 'DefaultLayout',
   data () {
     return {
-      clipped: false,
       drawer: false
-      // items: [
-      //   {
-      //     title: 'HeadHunter',
-      //     to: '/'
-      //   },
-      //   {
-      //     title: 'NetAngels',
-      //     to: '/NetAngeles'
-      //   }
-      // ]
     }
   }
 }
