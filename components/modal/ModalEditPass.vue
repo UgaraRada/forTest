@@ -14,10 +14,21 @@
     </v-btn>
     <div class="form_fields">
       <label for="newPass" class="form_fields-label">Введите новый пароль</label>
-      <input id="newPass" type="text" class="form_fields-input">
+      <input
+        id="newPass"
+        v-model="userNewPass.password"
+        type="text"
+        class="form_fields-input"
+        autocomplete="off"
+      >
 
       <label for="confirmPass" class="form_fields-label">Подтвердите пароль</label>
-      <input id="confirmPass" type="text" class="form_fields-input">
+      <input
+        id="confirmPass"
+        type="text"
+        class="form_fields-input"
+        autocomplete="off"
+      >
     </div>
     <v-btn
       type="submit"
@@ -37,9 +48,24 @@
 </template>
 
 <script>
+
 export default {
+  props: {
+    editUser: Object
+  },
+  data () {
+    return {
+
+    }
+  },
+  computed: {
+    userNewPass () {
+      return this.editUser
+    }
+  },
   methods: {
     submitForm () {
+      this.$store.commit('keyPass/editPassword', this.userNewPass)
       this.closeModal()
     },
     closeModal () {

@@ -6,7 +6,8 @@
           {{ $route.params.id }}
         </h2>
         <v-btn
-          href="#"
+          :href="platformData.link"
+          link
           icon
           color="black"
           class="card_header-link"
@@ -21,7 +22,7 @@
         multiple
       >
         <v-expansion-panel
-          v-for="(it,i) in users"
+          v-for="(it,i) in platformData.data"
           id="card_item"
           :key="i"
           class="card_item mb-4"
@@ -45,7 +46,7 @@
               icon
               color="black"
               tile
-              @click="modalEditVisible = true"
+              @click="openEditModal(it)"
             >
               <v-icon
                 color="black"
@@ -80,10 +81,12 @@
       max-width="450"
     >
       <v-card>
-        <ModalEditPass @modalEditVisible="closeEditPassModal" />
+        <ModalEditPass
+          :edit-user="editUser"
+          @modalEditVisible="closeEditPassModal"
+        />
       </v-card>
     </v-dialog>
-    {{ data }}
   </div>
 </template>
 
@@ -95,8 +98,8 @@ export default {
   layout: 'keyPass',
   data () {
     return {
-      users: [],
-      modalEditVisible: false
+      modalEditVisible: false,
+      editUser: ''
     }
   },
 
@@ -104,12 +107,12 @@ export default {
     title: 'About Page'
   },
   computed: {
-    data () {
-      return this.$store.state.keyPass.dataBase
+    platformData () {
+      return this.$store.state.keyPass.dataBase[this.router]
+    },
+    router () {
+      return this.$route.params.id
     }
-  },
-  created () {
-    this.getUsers()
   },
   methods: {
     copyPassword (pass) {
@@ -118,44 +121,9 @@ export default {
     closeEditPassModal (val) {
       this.modalEditVisible = val
     },
-    getUsers () {
-      if (this.$route.params.id === 'HeadHunter') {
-        this.users = [
-          {
-            id: 1,
-            login: 'somebody@pragmatica.design',
-            password: 'adsfasdfasdf',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-          },
-          {
-            id: 2,
-            login: 'somebody1@pragmatica.design',
-            password: '123123123',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-          }
-        ]
-      } else {
-        this.users = [
-          {
-            id: 3,
-            login: 'superMan@pragmatica.design',
-            password: 'brrrrrrrr',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-          },
-          {
-            id: 4,
-            login: 'superGirl@pragmatica.design',
-            password: 'aaarrrrrr',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-          },
-          {
-            id: 5,
-            login: 'Mr.Cowboy@pragmatica.design',
-            password: 'Cowboy',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-          }
-        ]
-      }
+    openEditModal (it) {
+      this.modalEditVisible = true
+      this.editUser = JSON.parse(JSON.stringify(it))
     }
   }
 

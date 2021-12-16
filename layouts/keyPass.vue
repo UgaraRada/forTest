@@ -51,7 +51,7 @@
       <v-tabs
         color="black"
       >
-        <v-tab nuxt to="/KeyPass/HeadHunter">
+        <v-tab nuxt>
           Keypass
         </v-tab>
         <v-tab nuxt to="/">
