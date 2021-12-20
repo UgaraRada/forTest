@@ -42,26 +42,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.app-bar {
-  &_logo {
-    min-width: 205px;
-    text-transform: uppercase;
-    font-weight: 700;
-    text-align: center;
-  }
-
-  &_link {
-  display: flex;
-  align-items: center;
-  align-self: stretch;
-  text-decoration: none;
-  color: black;
-
-  }
-}
-
-.main {
-  background-color: #FAFAFA;
-}
+@import '../assets/styles/commonLayout.scss';
 
 </style>

@@ -1,0 +1,34 @@
+.form {
+  padding: 60px 40px;
+  position: relative;
+
+  &_btn-close {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+  }
+}
+
+.form_fields {
+
+  &-label {
+    line-height: 35px;
+  }
+
+  &-input {
+  display: block;
+  width: 100%;
+  padding: 10px 54px 10px 24px;
+  outline: none;
+  background-color: #929292;
+  color: white;
+  margin-bottom: 20px;
+  }
+
+}
+
+.form_btn {
+  text-transform: none;
+  border-radius: 0;
+  margin-right: 12px;
+}

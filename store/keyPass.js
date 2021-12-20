@@ -42,13 +42,36 @@ export const state = () => ({
         }
       ]
     }
+
   }
 })
+
+export const getters = {
+  platforms (state) {
+    const arr = []
+    for (const key in state.dataBase) {
+      arr.push({
+        title: key,
+        to: `/KeyPass/${key}`
+      })
+    }
+    return arr
+  }
+}
 
 export const mutations = {
   editPassword (state, user) {
     state.dataBase[user.group].data.forEach((it) => {
       if (it.id === user.id) { it.password = user.password }
     })
+  },
+  addAccount (state, addData) {
+    state.dataBase[addData.group].data.push(addData)
+  },
+  addPlatform (state, addData) {
+    state.dataBase = {
+      ...state.dataBase,
+      [addData.name]: addData
+    }
   }
 }

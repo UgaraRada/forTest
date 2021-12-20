@@ -1,9 +1,13 @@
 <template>
   <div>
+    <div v-if="$route.params.id === 'search'">
+      hello from search
+    </div>
     <v-card class="ma-10 pa-10">
       <div class="card_header mb-10">
         <h2 class="mr-auto">
           {{ $route.params.id }}
+          {{ router }}
         </h2>
         <v-btn
           :href="platformData.link"
@@ -75,6 +79,13 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
+      <v-btn
+        color="#929292"
+        class="button"
+        @click="modalAddAccVisible = true"
+      >
+        Добавить аккаунт
+      </v-btn>
     </v-card>
     <v-dialog
       v-model="modalEditVisible"
@@ -87,18 +98,27 @@
         />
       </v-card>
     </v-dialog>
+    <v-dialog
+      v-model="modalAddAccVisible"
+      max-width="450"
+    >
+      <v-card>
+        <ModalAddAccaunt
+          @modalAddAccVisible="closeAddAccModal"
+        />
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import ModalEditPass from '~/components/modal/ModalEditPass.vue'
 
 export default {
-  components: { ModalEditPass },
   layout: 'keyPass',
   data () {
     return {
       modalEditVisible: false,
+      modalAddAccVisible: false,
       editUser: ''
     }
   },
@@ -121,6 +141,9 @@ export default {
     closeEditPassModal (val) {
       this.modalEditVisible = val
     },
+    closeAddAccModal (val) {
+      this.modalAddAccVisible = val
+    },
     openEditModal (it) {
       this.modalEditVisible = true
       this.editUser = JSON.parse(JSON.stringify(it))
@@ -131,6 +154,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import './../../assets/styles/keyPassModals';
+
+.button {
+  text-transform: none;
+  border-radius: 0;
+}
 .card_header {
   display: flex;
   align-items: center;

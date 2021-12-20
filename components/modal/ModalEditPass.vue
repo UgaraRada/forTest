@@ -14,21 +14,39 @@
     </v-btn>
     <div class="form_fields">
       <label for="newPass" class="form_fields-label">Введите новый пароль</label>
-      <input
-        id="newPass"
-        v-model="userNewPass.password"
-        type="text"
-        class="form_fields-input"
-        autocomplete="off"
-      >
+      <div class="form_fields-input-wrapper">
+        <input
+          id="newPass"
+          v-model="userData.password"
+          type="text"
+          class="form_fields-input"
+          autocomplete="off"
+        >
+        <v-btn
+          tile
+          icon
+          color="black"
+          class="field-input_btn-random"
+          @click="createPassword"
+        >
+          <img
+            src="../../static/svg/icon-random.svg"
+            width="40"
+          >
+        </v-btn>
+      </div>
 
       <label for="confirmPass" class="form_fields-label">Подтвердите пароль</label>
       <input
         id="confirmPass"
+        v-model="confirmPass"
         type="text"
         class="form_fields-input"
         autocomplete="off"
       >
+    </div>
+    <div v-if="errorPass">
+      Пароли должны совпадать
     </div>
     <v-btn
       type="submit"
@@ -55,61 +73,61 @@ export default {
   },
   data () {
     return {
-
+      generatorPass: require('generate-password'),
+      password: '',
+      confirmPass: '',
+      errorPass: false
     }
   },
   computed: {
-    userNewPass () {
+    userData () {
       return this.editUser
+    },
+    comparePass () {
+      return this.userData.password === this.confirmPass
     }
   },
+
   methods: {
     submitForm () {
-      this.$store.commit('keyPass/editPassword', this.userNewPass)
-      this.closeModal()
+      if (this.comparePass) {
+        this.$store.commit('keyPass/editPassword', this.userData)
+        this.closeModal()
+        this.confirmPass = ''
+        this.errorPass = false
+      } else { this.errorPass = true }
     },
     closeModal () {
       this.$emit('modalEditVisible', false)
+    },
+    createPassword () {
+      this.userData.password = this.generatorPass.generate({
+        length: 14,
+        numbers: true
+      })
+      this.confirmPass = this.userData.password
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.form {
-  padding: 60px 40px;
-  position: relative;
+.form_fields-input {
 
-  &_btn-close {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-  }
-}
-.form_fields {
-
-  &-label {
-    line-height: 35px;
-  }
-
-  &-input {
-  display: block;
-  width: 100%;
-  padding: 10px 24px;
-  outline: none;
-  background-color: #929292;
-  color: white;
-  margin-bottom: 20px;
-  }
-
-  &:nth-child(2) {
+  &:last-child {
     margin-bottom: 40px;
   }
+
+  &-wrapper {
+  position: relative;
+  }
+
 }
 
-.form_btn {
-  text-transform: none;
-  border-radius: 0;
-  margin-right: 12px;
+.field-input_btn-random {
+  position: absolute;
+  top: 3px;
+  right: 10px;
 }
+
 </style>

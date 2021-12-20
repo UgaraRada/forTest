@@ -14,19 +14,24 @@
           type="text"
           class="nav-drawer_input-search"
           placeholder="Поиск..."
+          @click="goToSearch"
         >
+        <nuxt-link nuxt to="/KeyPass/Search">
+          search
+        </nuxt-link>
       </div>
       <v-btn
         block
         color="black"
         class="nav-drawer_btn-add mb-5"
         x-large
+        @click="modalAddPlatformVisible = true"
       >
         Добавить ресурс
       </v-btn>
       <v-list>
         <v-list-item
-          v-for="(item, i) in items"
+          v-for="(item, i) in platforms"
           :key="i"
           :to="item.to"
           router
@@ -37,6 +42,16 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <v-dialog
+        v-model="modalAddPlatformVisible"
+        max-width="450"
+      >
+        <v-card>
+          <ModalAddPlatform
+            @modalAddPlatformVisible="closeAddPlatformModal"
+          />
+        </v-card>
+      </v-dialog>
     </v-navigation-drawer>
     <v-app-bar
       clipped-left
@@ -75,44 +90,28 @@ export default {
     return {
       clipped: false,
       drawer: true,
-      items: [
-        {
-          title: 'HeadHunter',
-          to: '/KeyPass/HeadHunter'
-        },
-        {
-          title: 'NetAngels',
-          to: '/KeyPass/NetAngeles'
-        }
-      ]
+      modalAddPlatformVisible: false
+    }
+  },
+  computed: {
+    platforms () {
+      return this.$store.getters['keyPass/platforms']
+    }
+  },
+  methods: {
+    closeAddPlatformModal () {
+      this.modalAddPlatformVisible = false
+    },
+    goToSearch () {
+      this.$router.push('/KeyPass/HeadHunter')
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.app-bar {
-  &_logo {
-    min-width: 205px;
-    text-transform: uppercase;
-    font-weight: 700;
-    text-align: center;
-  }
+@import '../assets/styles/commonLayout.scss';
 
-  &_link {
-  display: flex;
-  align-items: center;
-  align-self: stretch;
-  text-decoration: none;
-  color: black;
-  color: rgb(16, 16, 16)
-
-  }
-}
-
-.main {
-  background-color: #FAFAFA;
-}
 .input-search-wrapper {
   position: relative;
   &::after {
