@@ -17,7 +17,7 @@
       <div class="form_fields-input-wrapper">
         <input
           id="newPass"
-          v-model="userData.password"
+          v-model="password"
           type="text"
           class="form_fields-input"
           autocomplete="off"
@@ -84,28 +84,33 @@ export default {
       return this.editUser
     },
     comparePass () {
-      return this.userData.password === this.confirmPass
+      return this.password === this.confirmPass
     }
   },
 
   methods: {
     submitForm () {
       if (this.comparePass) {
+        this.userData.password = this.password
         this.$store.commit('keyPass/editPassword', this.userData)
         this.closeModal()
-        this.confirmPass = ''
         this.errorPass = false
       } else { this.errorPass = true }
     },
     closeModal () {
       this.$emit('modalEditVisible', false)
+      this.clearFields()
     },
     createPassword () {
-      this.userData.password = this.generatorPass.generate({
+      this.password = this.generatorPass.generate({
         length: 14,
         numbers: true
       })
-      this.confirmPass = this.userData.password
+      this.confirmPass = this.password
+    },
+    clearFields () {
+      this.password = ''
+      this.confirmPass = ''
     }
   }
 }

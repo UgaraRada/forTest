@@ -56,9 +56,9 @@ export default {
     }
   },
   computed: {
-    router () {
-      return this.$route.params.id
-    }
+    // router () {
+    //   return this.$route.params.id
+    // }
   },
 
   methods: {

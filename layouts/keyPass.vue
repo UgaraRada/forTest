@@ -11,14 +11,12 @@
     >
       <div class="input-search-wrapper mb-5">
         <input
+          v-model="search"
           type="text"
           class="nav-drawer_input-search"
           placeholder="Поиск..."
           @click="goToSearch"
         >
-        <nuxt-link nuxt to="/KeyPass/Search">
-          search
-        </nuxt-link>
       </div>
       <v-btn
         block
@@ -66,7 +64,7 @@
       <v-tabs
         color="black"
       >
-        <v-tab nuxt>
+        <v-tab nuxt to="/KeyPass/">
           Keypass
         </v-tab>
         <v-tab nuxt to="/">
@@ -90,12 +88,21 @@ export default {
     return {
       clipped: false,
       drawer: true,
-      modalAddPlatformVisible: false
+      modalAddPlatformVisible: false,
+      search: ''
     }
   },
   computed: {
     platforms () {
       return this.$store.getters['keyPass/platforms']
+    },
+    keyPassLink () {
+      return this.$store.getters['keyPass/platforms'][0].to
+    }
+  },
+  watch: {
+    search () {
+      this.$store.commit('keyPass/serchData', this.search)
     }
   },
   methods: {
@@ -103,7 +110,7 @@ export default {
       this.modalAddPlatformVisible = false
     },
     goToSearch () {
-      this.$router.push('/KeyPass/HeadHunter')
+      this.$router.push('/KeyPass/Search')
     }
   }
 }

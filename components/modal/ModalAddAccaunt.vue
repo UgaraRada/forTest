@@ -56,6 +56,9 @@
 <script>
 import uniqid from 'uniqid'
 export default {
+  props: {
+    group: String
+  },
   data () {
     return {
       login: '',
@@ -74,7 +77,7 @@ export default {
       const addData = {
         id: uniqid(),
         login: this.login,
-        group: this.router,
+        group: this.group,
         description: this.description,
         password: this.password
       }

@@ -1,6 +1,6 @@
 export const state = () => ({
   dataBase: {
-    HeadHunter: {
+    id1: {
       id: 'id1',
       name: 'HeadHunter',
       link: 'https://hh.ru',
@@ -21,7 +21,7 @@ export const state = () => ({
         }
       ]
     },
-    NetAngeles: {
+    id2: {
       id: 'id2',
       name: 'NetAngeles',
       link: 'https://NetANgels.ru',
@@ -42,8 +42,8 @@ export const state = () => ({
         }
       ]
     }
-
-  }
+  },
+  searchData: ''
 })
 
 export const getters = {
@@ -51,7 +51,7 @@ export const getters = {
     const arr = []
     for (const key in state.dataBase) {
       arr.push({
-        title: key,
+        title: state.dataBase[key].name,
         to: `/KeyPass/${key}`
       })
     }
@@ -61,17 +61,24 @@ export const getters = {
 
 export const mutations = {
   editPassword (state, user) {
-    state.dataBase[user.group].data.forEach((it) => {
+    const idGroup = Object.values(state.dataBase)
+      .find(it => it.name === user.group).id
+    state.dataBase[idGroup].data.forEach((it) => {
       if (it.id === user.id) { it.password = user.password }
     })
   },
   addAccount (state, addData) {
-    state.dataBase[addData.group].data.push(addData)
+    const idGroup = Object.values(state.dataBase)
+      .find(it => it.name === addData.group).id
+    state.dataBase[idGroup].data.push(addData)
   },
   addPlatform (state, addData) {
     state.dataBase = {
       ...state.dataBase,
-      [addData.name]: addData
+      [addData.id]: addData
     }
+  },
+  serchData (state, input) {
+    state.searchData = input
   }
 }

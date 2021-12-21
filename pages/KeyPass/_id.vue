@@ -1,92 +1,108 @@
 <template>
-  <div>
-    <div v-if="$route.params.id === 'search'">
-      hello from search
-    </div>
-    <v-card class="ma-10 pa-10">
-      <div class="card_header mb-10">
-        <h2 class="mr-auto">
-          {{ $route.params.id }}
-          {{ router }}
-        </h2>
-        <v-btn
-          :href="platformData.link"
-          link
-          icon
-          color="black"
-          class="card_header-link"
-          tile
-        >
-          <v-icon>
-            mdi-open-in-new
-          </v-icon>
-        </v-btn>
-      </div>
-      <v-expansion-panels
-        multiple
+  <div class="pa-10">
+    <h2 v-if="searchPage" class="mb-5">
+      Результаты поиска:
+    </h2>
+    <p v-if="!showSearchData">
+      Для поиска введите минимум {{ 3 - searchValue.length }} символ{{ 3 - searchValue.length === 1 ? '' : 'а' }}...
+    </p>
+    <p v-else-if="!Object.keys(platformsData).length">
+      Ничего неть &#128532; Но ты всегда можешь попробовать еще разок...
+    </p>
+    <div
+      v-if="showSearchData"
+      class="card-wrapper"
+    >
+      <v-card
+        v-for="(it, i) in platformsData"
+        :key="i"
+        class="pa-10 mb-5"
       >
-        <v-expansion-panel
-          v-for="(it,i) in platformData.data"
-          id="card_item"
-          :key="i"
-          class="card_item mb-4"
-        >
-          <div class="card_item-header">
-            <div class="mr-auto">
-              {{ it.login }}
-            </div>
-            <v-btn
-              icon
-              color="black"
-              tile
-              class="mr-2"
-              @click="copyPassword(it.password)"
-            >
-              <v-icon>
-                mdi-content-copy
-              </v-icon>
-            </v-btn>
-            <v-btn
-              icon
-              color="black"
-              tile
-              @click="openEditModal(it)"
-            >
-              <v-icon
-                color="black"
-              >
-                mdi-square-edit-outline
-              </v-icon>
-            </v-btn>
-            <div class="item-header_block-for-btn-open" />
-          </div>
-          <v-expansion-panel-header
-            class="card_item-btn-open"
-            disable-icon-rotate
-            ripple
+        <div class="card_header mb-10">
+          <h2 class="mr-auto">
+            {{ platformsData[i].name }}
+          </h2>
+          <v-btn
+            :href="platformsData[i].link"
+            link
+            icon
+            color="black"
+            class="card_header-link"
+            tile
+            target="_blank"
           >
-            <template #actions>
-              <v-icon color="black">
-                mdi-unfold-more-horizontal
-              </v-icon>
-            </template>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content class="card_item-description">
-            <p class="mt-5">
-              Описание:
-            </p>
-            {{ it.description }}
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      <v-btn
-        color="#929292"
-        class="button"
-        @click="modalAddAccVisible = true"
-      >
-        Добавить аккаунт
-      </v-btn>
-    </v-card>
+            <v-icon>
+              mdi-open-in-new
+            </v-icon>
+          </v-btn>
+        </div>
+        <v-expansion-panels
+          multiple
+        >
+          <v-expansion-panel
+            v-for="(item,index) in platformsData[i].data"
+            id="card_item"
+            :key="index"
+            class="card_item mb-4"
+          >
+            <div class="card_item-header">
+              <div class="mr-auto">
+                {{ item.login }}
+              </div>
+              <v-btn
+                icon
+                color="black"
+                tile
+                class="mr-2"
+                @click="copyPassword(item.password)"
+              >
+                <v-icon>
+                  mdi-content-copy
+                </v-icon>
+              </v-btn>
+              <v-btn
+                icon
+                color="black"
+                tile
+                @click="openEditModal(item)"
+              >
+                <v-icon
+                  color="black"
+                >
+                  mdi-square-edit-outline
+                </v-icon>
+              </v-btn>
+              <div class="item-header_block-for-btn-open" />
+            </div>
+            <v-expansion-panel-header
+              class="card_item-btn-open"
+              disable-icon-rotate
+              ripple
+            >
+              <template #actions>
+                <v-icon color="black">
+                  mdi-unfold-more-horizontal
+                </v-icon>
+              </template>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content class="card_item-description">
+              <p class="mt-5">
+                Описание:
+              </p>
+              {{ item.description }}
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+        <v-btn
+          v-if="!searchPage"
+          color="#929292"
+          class="button"
+          @click="openAddAccModal(it.name)"
+        >
+          Добавить аккаунт
+        </v-btn>
+      </v-card>
+    </div>
     <v-dialog
       v-model="modalEditVisible"
       max-width="450"
@@ -104,6 +120,7 @@
     >
       <v-card>
         <ModalAddAccaunt
+          :group="addGroup"
           @modalAddAccVisible="closeAddAccModal"
         />
       </v-card>
@@ -119,7 +136,8 @@ export default {
     return {
       modalEditVisible: false,
       modalAddAccVisible: false,
-      editUser: ''
+      editUser: '',
+      addGroup: ''
     }
   },
 
@@ -127,11 +145,46 @@ export default {
     title: 'About Page'
   },
   computed: {
-    platformData () {
-      return this.$store.state.keyPass.dataBase[this.router]
+    platformsData () {
+      if (!this.searchPage) {
+        const getArr = Object.values(this.$store.state.keyPass.dataBase)
+        return getArr.filter(it => it.id === this.$route.params.id)
+      } else {
+        const database = JSON.parse(JSON.stringify(this.$store.state.keyPass.dataBase))
+        const accounts = Object.values(database)
+          .flatMap(res => res.data)
+          .filter(account => account.login.toLowerCase().includes(this.searchValue.toLowerCase()))
+
+        for (const key in database) {
+          database[key].data = []
+        }
+        accounts.forEach(function (it) {
+          const idGroup = Object.values(database)
+            .find(item => item.name === it.group).id
+          database[idGroup].data.push(it)
+        })
+        Object.values(database).forEach((it) => {
+          if (it.data.length === 0) { delete database[`${it.id}`] }
+        })
+        return database
+      }
+    },
+    searchPage () {
+      return this.router === 'Search'
+    },
+    searchValue () {
+      return this.$store.state.keyPass.searchData
     },
     router () {
       return this.$route.params.id
+    },
+    state () {
+      return this.$store.state.keyPass
+    },
+    showSearchData () {
+      return !this.searchPage
+        ? true
+        : this.searchValue.length > 2
     }
   },
   methods: {
@@ -147,6 +200,10 @@ export default {
     openEditModal (it) {
       this.modalEditVisible = true
       this.editUser = JSON.parse(JSON.stringify(it))
+    },
+    openAddAccModal (it) {
+      this.modalAddAccVisible = true
+      this.addGroup = it
     }
   }
 

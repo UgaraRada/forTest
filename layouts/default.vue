@@ -13,7 +13,7 @@
       <v-tabs
         color="black"
       >
-        <v-tab nuxt to="/KeyPass/HeadHunter">
+        <v-tab nuxt :to="keyPassLink">
           Keypass
         </v-tab>
         <v-tab nuxt to="/">
@@ -36,6 +36,11 @@ export default {
   data () {
     return {
       drawer: false
+    }
+  },
+  computed: {
+    keyPassLink () {
+      return this.$store.getters['keyPass/platforms'][0].to
     }
   }
 }
