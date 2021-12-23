@@ -95,9 +95,6 @@ export default {
   computed: {
     platforms () {
       return this.$store.getters['keyPass/platforms']
-    },
-    keyPassLink () {
-      return this.$store.getters['keyPass/platforms'][0].to
     }
   },
   watch: {

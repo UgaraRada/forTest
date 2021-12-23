@@ -80,5 +80,13 @@ export const mutations = {
   },
   serchData (state, input) {
     state.searchData = input
+  },
+  deleteAccount (state, data) {
+    state.dataBase[data.idGroup].data =
+    state.dataBase[data.idGroup].data.filter(it => it.id !== data.idAcc)
+  },
+  deleteGroup (state, id) {
+    state.dataBase[id] = {}
+    delete state.dataBase[`${id}`]
   }
 }

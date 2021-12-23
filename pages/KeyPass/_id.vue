@@ -20,10 +20,10 @@
       >
         <div class="card_header mb-10">
           <h2 class="mr-auto">
-            {{ platformsData[i].name }}
+            {{ it.name }}
           </h2>
           <v-btn
-            :href="platformsData[i].link"
+            :href="it.link"
             link
             icon
             color="black"
@@ -40,21 +40,20 @@
           multiple
         >
           <v-expansion-panel
-            v-for="(item,index) in platformsData[i].data"
+            v-for="(account,index) in it.data"
             id="card_item"
             :key="index"
             class="card_item mb-4"
           >
             <div class="card_item-header">
               <div class="mr-auto">
-                {{ item.login }}
+                {{ account.login }}
               </div>
               <v-btn
                 icon
                 color="black"
                 tile
-                class="mr-2"
-                @click="copyPassword(item.password)"
+                @click="copyPassword(account.password)"
               >
                 <v-icon>
                   mdi-content-copy
@@ -64,12 +63,20 @@
                 icon
                 color="black"
                 tile
-                @click="openEditModal(item)"
+                @click="openEditModal(account)"
               >
-                <v-icon
-                  color="black"
-                >
+                <v-icon>
                   mdi-square-edit-outline
+                </v-icon>
+              </v-btn>
+              <v-btn
+                icon
+                color="black"
+                tile
+                @click="deleteAccount(it.id, account.id)"
+              >
+                <v-icon>
+                  mdi-trash-can-outline
                 </v-icon>
               </v-btn>
               <div class="item-header_block-for-btn-open" />
@@ -89,17 +96,25 @@
               <p class="mt-5">
                 Описание:
               </p>
-              {{ item.description }}
+              {{ account.description }}
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
         <v-btn
           v-if="!searchPage"
           color="#929292"
-          class="button"
+          class="button mr-10"
           @click="openAddAccModal(it.name)"
         >
           Добавить аккаунт
+        </v-btn>
+        <v-btn
+          v-if="!searchPage && !it.data.length"
+          color="#929292"
+          class="button"
+          @click="deleteGroup(it.id)"
+        >
+          Удалить платформу
         </v-btn>
       </v-card>
     </div>
@@ -182,9 +197,7 @@ export default {
       return this.$store.state.keyPass
     },
     showSearchData () {
-      return !this.searchPage
-        ? true
-        : this.searchValue.length > 2
+      return !this.searchPage || this.searchValue.length > 2
     }
   },
   methods: {
@@ -204,6 +217,18 @@ export default {
     openAddAccModal (it) {
       this.modalAddAccVisible = true
       this.addGroup = it
+    },
+    deleteAccount (itId, accId) {
+      const sentData = {
+        idGroup: itId,
+        idAcc: accId
+      }
+      this.$store.commit('keyPass/deleteAccount', sentData)
+    },
+    deleteGroup (id) {
+      this.$store.commit('keyPass/deleteGroup', id)
+      const idFirstPlatform = Object.keys(this.$store.state.keyPass.dataBase)[0]
+      this.$router.push(`/KeyPass/${idFirstPlatform}`)
     }
   }
 
@@ -238,6 +263,10 @@ export default {
     display: flex;
     align-items: center;
     padding: 10px;
+  }
+
+  &-header button:not(:nth-child(4)) {
+    margin-right: 8px;
   }
 
   &-btn-open {
