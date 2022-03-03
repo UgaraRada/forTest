@@ -8,7 +8,7 @@
     >
       <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
       <div class="app-bar_logo">
-        pragmatica
+        company
       </div>
       <v-tabs
         color="black"
